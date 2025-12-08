@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>
         {% block title %}
             fléshi - Página Inicial
@@ -12,17 +13,31 @@
     <body>
         <h1>fléxi - pagina inicial</h1>
         {% block form %}
-         <form method="post">
-        {{ form.csrf_token }}
-            {{ form.email.label() }}
-            {{ form.email }}
+        <div class="d-flex justify-content-center">
+            <div class="border m-5 shadow-lg rounded-5 p-5 w-50">
+                <form method="post">
+                    {{ form.csrf_token }}
 
-            {{ form.password.label() }}
-            {{ form.password }}
+                    <div class="mb-3 w-100">
+                        {{ form.email.label(class="form-label") }}
+                        {{ form.email(class="form-control") }}
+                    </div>
+                    <div class="mb-3">
 
-            {{ form.submit }}
-        </form>
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control") }}
+                    </div>
+                    {{ form.submit(class="btn btn-outline-success w-100") }}
+
+                </form>
+                <a href="{{ url_for('createaccount') }}" class="w-100"> Não tem uma conta? Cadastre-se</a>
+
+            </div>
+        </div>
+
         {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     </body>
 {% endblock %}
 </html>
