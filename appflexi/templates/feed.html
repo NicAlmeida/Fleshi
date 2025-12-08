@@ -14,4 +14,18 @@
                 <img src="{{ url_for('static', filename='posts_photos/' ~ photo.file_name) }}" alt="Imagem">
             </a>
         {% endfor %}
+
+        {% for photo in photos %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-{{ photo.id }}">
+                    Ver Comentários ({{ photo.comments | length}})
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+
+
+
+{% endfor %}
    {% endblock %}
