@@ -16,11 +16,13 @@ class User(database.Model, UserMixin):
     password = database.Column(database.String(60), nullable=False)
 
     photos = database.relationship('Photo', backref='user', lazy=True)
+    comments = database.relationship('Comment', backref='user', lazy=True)
 
 
 class Photo(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     file_name = database.Column(database.String(255), default="default.png")
+    comments = database.relationship('Comment', backref='photo', lazy=True)
     upload_date = database.Column(
         database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
@@ -29,3 +31,24 @@ class Photo(database.Model):
         database.ForeignKey('user.id'),
         nullable=False
     )
+
+
+class Comment(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    comment = database.Column(database.String(255), nullable=False)
+    upload_date = database.Column(
+        database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+    user_id = database.Column(
+        database.Integer,
+        database.ForeignKey('user.id'),
+        nullable=False
+    )
+    photo_id = database.Column(
+        database.Integer,
+        database.ForeignKey('photo.id'),
+        nullable=False)
+
+
+
+
