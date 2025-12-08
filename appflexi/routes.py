@@ -48,6 +48,33 @@ def profile(user_id):
         user = User.query.get(int(user_id))
         return render_template('profile.html', user=user)
 
+
+from flask import redirect, url_for, request, flash, abort
+from appflexi import app, database
+from appflexi.models import Photo, Comment
+from flask_login import login_required, current_user
+
+
+@app.route('/post/<photo_id>/comment', methods=['POST'])
+@login_required
+def add_comment(photo_id):
+    photo = Photo.query.get(photo_id)
+    texto_comentario = request.form.get('text_comment')
+
+    if not texto_comentario:
+        flash('O comentário não pode estar vazio.', 'danger')
+        return redirect(url_for('homepage'))
+
+    novo_comentario = Comment(comment=texto_comentario,user_id=current_user.id,photo_id=photo.id)
+    database.session.add(novo_comentario)
+    database.session.commit()
+
+    flash('Comentário adicionado com sucesso!', 'success')
+
+    return redirect(url_for('homepage'))
+
+
+
 @app.route('/logout')
 @login_required
 def logout():
