@@ -1,8 +1,9 @@
-from flask import  render_template, url_for, redirect
+from flask import  render_template, url_for, redirect, request
+from flask import request, redirect, url_for, flash, abort
 from flask_login import login_required, login_user, logout_user, current_user
 from appflexi.forms import LoginForm, RegisterForm, PhotoForm
 from appflexi import app, database, bcrypt
-from appflexi.models import User, Photo
+from appflexi.models import User, Photo, Comment
 import os
 from werkzeug.utils import secure_filename
 
@@ -49,12 +50,6 @@ def profile(user_id):
         return render_template('profile.html', user=user)
 
 
-from flask import redirect, url_for, request, flash, abort
-from appflexi import app, database
-from appflexi.models import Photo, Comment
-from flask_login import login_required, current_user
-
-
 @app.route('/post/<photo_id>/comment', methods=['POST'])
 @login_required
 def add_comment(photo_id):
@@ -65,12 +60,11 @@ def add_comment(photo_id):
         flash('O comentário não pode estar vazio.', 'danger')
         return redirect(url_for('homepage'))
 
-    novo_comentario = Comment(comment=texto_comentario,user_id=current_user.id,photo_id=photo.id)
+    novo_comentario = Comment( omment=texto_comentario, user_id=current_user.id, photo_id=photo.id)
     database.session.add(novo_comentario)
     database.session.commit()
 
     flash('Comentário adicionado com sucesso!', 'success')
-
     return redirect(url_for('homepage'))
 
 
@@ -86,3 +80,4 @@ def logout():
 def feed():
     photos = Photo.query.order_by(Photo.upload_date.desc()).all()
     return render_template("feed.html", photos=photos)
+
