@@ -32,7 +32,7 @@
                         </div>
 
                         <div class="card-body">
-                            <p class="card-text"><small class="text-muted">Postado em {{ photo.upload_date.strftime('%d/%m/%Y') }}</small></p>
+                            <p class="card-text"><small class="text-muted">Postado em {{ photo.upload_date.strftime('%d/%m/%Y - %H:%M') }}</small></p>
 
                             <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#modal-{{ photo.id }}">
                                 Ver Comentários ({{ photo.comments | length }})
@@ -100,7 +100,7 @@
                                                                 <div>
                                                                     <div class="d-flex align-items-center">
                                                                         <strong style="font-size: 0.9em; margin-right: 5px;" >{{ reply.user.username }}</strong>
-                                                                        <span class="text-muted" style="font-size: 0.75em;">{{ reply.upload_date.strftime('%d/%m') }}</span>
+                                                                        <span class="text-muted" style="font-size: 0.75em;">{{ reply.upload_date.strftime('%d/%m - %H:%M') }}</span>
                                                                     </div>
                                                                     <p class="mb-0 small text-secondary">{{ reply.comment }}</p>
                                                                 </div>
