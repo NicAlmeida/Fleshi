@@ -50,22 +50,30 @@ def profile(user_id):
         return render_template('profile.html', user=user)
 
 
-@app.route('/post/<photo_id>/comment', methods=['POST'])
+@app.route('/post/<int:photo_id>/comment', methods=['POST'])
 @login_required
 def add_comment(photo_id):
-    photo = Photo.query.get(photo_id)
+    photo = Photo.query.get_or_404(photo_id)
+
     texto_comentario = request.form.get('text_comment')
+    parent_id = request.form.get('parent_id')
 
     if not texto_comentario:
         flash('O comentário não pode estar vazio.', 'danger')
-        return redirect(url_for('homepage'))
+        return redirect(request.referrer or url_for('homepage'))
 
-    novo_comentario = Comment( omment=texto_comentario, user_id=current_user.id, photo_id=photo.id)
+    novo_comentario = Comment(
+        comment=texto_comentario,
+        user_id=current_user.id,
+        photo_id=photo.id,
+        parent_id=int(parent_id) if parent_id else None
+    )
+
     database.session.add(novo_comentario)
     database.session.commit()
 
-    flash('Comentário adicionado com sucesso!', 'success')
-    return redirect(url_for('homepage'))
+    flash('Comentário enviado!', 'success')
+    return redirect(request.referrer or url_for('homepage'))
 
 
 

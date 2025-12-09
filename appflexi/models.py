@@ -39,15 +39,11 @@ class Comment(database.Model):
     upload_date = database.Column(
         database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
-    user_id = database.Column(
-        database.Integer,
-        database.ForeignKey('user.id'),
-        nullable=False
-    )
-    photo_id = database.Column(
-        database.Integer,
-        database.ForeignKey('photo.id'),
-        nullable=False)
+    user_id = database.Column(database.Integer, database.ForeignKey('user.id'), nullable=False)
+    photo_id = database.Column(database.Integer, database.ForeignKey('photo.id'), nullable=False)
+    parent_id = database.Column(database.Integer, database.ForeignKey('comment.id'), nullable=True)
+
+    replies = database.relationship('Comment',backref=database.backref('parent', remote_side=[id]),lazy=True)
 
 
 

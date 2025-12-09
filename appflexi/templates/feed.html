@@ -11,11 +11,13 @@
         <h1 class="text-center mb-4">Feed Principal</h1>
 
         <div class="row justify-content-center">
-            <div class="col-md-5"> {% for photo in photos %}
+            <div class="col-md-5">
+                {% for photo in photos %}
+
                     <div class="card mb-5 shadow-sm">
 
                         <div class="card-header bg-transparent border-0 pt-3">
-                            <a href="{{ url_for('profile', user_id=photo.user_id) }}" class="text-decoration-none" style="color:black;">
+                            <a href="{{ url_for('profile', user_id=photo.user_id) }}" class="text-decoration-none text-dark">
                                 <strong>{{ photo.user.username }}</strong>
                             </a>
                         </div>
@@ -38,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="modal" id="modal-{{ photo.id }}" aria-hidden="true">
+                    <div class="modal fade" id="modal-{{ photo.id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
 
@@ -47,21 +49,59 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
-                                <div class="modal-body" style="max-height: 400px;">
-                                    {% for comment in photo.comments %}
+                                <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+
+                                    {% for comment in photo.comments if not comment.parent_id %}
+
                                         <div class="mb-3 border-bottom pb-2">
-                                            <div class="d-flex justify-content-between align-items-center">
+
+                                            <div class="d-flex justify-content-between align-items-center ">
                                                 <strong>{{ comment.user.username }}</strong>
-                                                <p class="text-muted" style="font-size: 0.8em">
+                                                <small class="text-muted" style="font-size: 0.8em">
                                                     {{ comment.upload_date.strftime('%d/%m - %H:%M') }}
-                                                </p>
+                                                </small>
                                             </div>
                                             <p class="mb-1 mt-1">{{ comment.comment }}</p>
+
+                                            <a class="text-decoration-none small" style="cursor: pointer;"
+                                               data-bs-toggle="collapse" href="#collapseReply-{{ comment.id }}"
+                                               role="button" aria-expanded="false">
+                                               Responder
+                                            </a>
+
+                                            {% if comment.replies %}
+                                                <div class="ms-4 mt-2 ps-2 border-start" style="background-color: #f9f9f9; border-radius: 5px;">
+                                                    {% for reply in comment.replies %}
+                                                        <div class="p-2 mb-1">
+                                                            <div class="d-flex align-items-center">
+                                                                <strong style="font-size: 0.9em; margin-right: 10px;" >{{ reply.user.username }}</strong>
+                                                                <span class="text-muted" style="font-size: 0.75em;">{{ reply.upload_date.strftime('%d/%m - %H:%M') }}</span>
+                                                            </div>
+                                                            <p class="mb-0 small text-secondary">{{ reply.comment }}</p>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="collapse mt-2" id="collapseReply-{{ comment.id }}">
+                                                <div class="card card-body p-2 bg-light border-0">
+                                                    <form action="{{ url_for('add_comment', photo_id=photo.id) }}" method="POST">
+                                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+
+                                                        <div class="input-group input-group-sm">
+                                                            <input type="text" name="text_comment" class="form-control" placeholder="Responder @{{ comment.user.username }}..." required>
+                                                            <button class="btn btn-secondary" type="submit">Enviar</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                     {% else %}
                                         <div class="text-center text-muted p-3">
-                                            <p>Nenhum comentário ainda.</p>
-                                            <p>Seja o primeiro a comentar!</p>
+                                            <p class="mb-0">Nenhum comentário ainda.</p>
+                                            <small>Seja o primeiro a comentar!</small>
                                         </div>
                                     {% endfor %}
                                 </div>
@@ -78,7 +118,7 @@
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
+                {% endfor %}
             </div>
         </div>
     </div>
