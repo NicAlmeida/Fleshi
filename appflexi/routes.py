@@ -76,6 +76,33 @@ def add_comment(photo_id):
     return redirect(request.referrer or url_for('homepage'))
 
 
+@app.route('/comment/<int:comment_id>/delete', methods=['GET', 'POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    database.session.delete(comment)
+    database.session.commit()
+
+    flash('Comentário excluído.', 'success')
+    return redirect(request.referrer or url_for('homepage'))
+
+
+@app.route('/comment/<int:comment_id>/edit', methods=['POST'])
+@login_required
+def edit_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+
+    novo_texto = request.form.get('text_edit')
+
+    if novo_texto:
+        comment.comment = novo_texto
+        database.session.commit()
+        flash('Comentário atualizado!', 'success')
+
+    return redirect(request.referrer or url_for('homepage'))
+
+
 
 @app.route('/logout')
 @login_required
